@@ -101,7 +101,7 @@ namespace Zeroconf
                                  .ConfigureAwait(false);
 
             return dict.Select(pair => ResponseToZeroconf(pair.Value, pair.Key))
-                       .Where(zh => zh.Services.Any(s => options.Protocols.Contains(s.Key))) // Ensure we only return records that have matching services
+                       .Where(zh => zh.Services.Any(s => options.Protocols.Contains(s.Value.Protocol))) // Ensure we only return records that have matching services
                        .ToList();
         }
 

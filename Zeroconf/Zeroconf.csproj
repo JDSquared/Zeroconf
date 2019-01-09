@@ -13,6 +13,8 @@
     <CodeAnalysisRuleSet>Zeroconf.ruleset</CodeAnalysisRuleSet>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryUrl>https://github.com/JDSquared/Zeroconf</RepositoryUrl>
+    <PackageReleaseNotes>Change resolution to allow multiple services of the same type on one host identified by announced name.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

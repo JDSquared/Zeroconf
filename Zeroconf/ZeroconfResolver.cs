@@ -119,18 +119,13 @@ namespace Zeroconf
             };
 
             z.Id = z.IPAddresses.FirstOrDefault() ?? remoteAddress;
+
+            // Set the host display name from the A record
+            z.DisplayName = response.RecordsA.Length > 0 ? 
+                response.RecordsA.First().RR.NAME : remoteAddress;
             
-            var dispNameSet = false;
-           
             foreach (var ptrRec in response.RecordsPTR)
             {
-                // set the display name if needed
-                if (!dispNameSet)
-                {
-                    z.DisplayName = ptrRec.PTRDNAME.Split('.')[0];
-                    dispNameSet = true;
-                }
-
                 // Get the matching service records
                 var responseRecords = response.RecordsRR
                                              .Where(r => r.NAME == ptrRec.PTRDNAME)
@@ -143,10 +138,10 @@ namespace Zeroconf
 
                 var svc = new Service
                 {
-                    Name = ptrRec.RR.NAME,
+                    Name = ptrRec.PTRDNAME,
                     Port = srvRec.PORT,
                     Ttl = (int)srvRec.RR.TTL,
-
+                    Protocol = ptrRec.RR.NAME,
                 };
 
                 // There may be 0 or more text records - property sets

@@ -60,6 +60,11 @@ namespace Zeroconf
         int Ttl { get; }
 
         /// <summary>
+        /// Protocol
+        /// </summary>
+        string Protocol { get; }
+
+        /// <summary>
         ///     Properties of the object. Most services have a single set of properties, but some services
         ///     may return multiple sets of properties
         /// </summary>
@@ -165,6 +170,7 @@ namespace Zeroconf
         public string Name { get; set; }
         public int Port { get; set; }
         public int Ttl { get; set; }
+        public string Protocol { get; set; }
 
         public IReadOnlyList<IReadOnlyDictionary<string, string>> Properties => properties;
 
@@ -172,7 +178,7 @@ namespace Zeroconf
         {
             var sb = new StringBuilder();
 
-            sb.Append($"Service: {Name} Port: {Port}, TTL: {Ttl}, PropertySets: {properties.Count}");
+            sb.Append($"Service: {Name} Port: {Port}, TTL: {Ttl}, Protocol: {Protocol}, PropertySets: {properties.Count}");
 
             if (properties.Any())
             {
