@@ -37,7 +37,7 @@ namespace Zeroconf
         }
 
 
-        async Task NetworkRequestAsync(byte[] requestBytes,
+        public async Task NetworkRequestAsync(byte[] requestBytes,
                                               TimeSpan scanTime,
                                               int retries,
                                               int retryDelayMilliseconds,

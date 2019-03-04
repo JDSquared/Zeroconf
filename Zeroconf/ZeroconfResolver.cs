@@ -63,10 +63,23 @@ namespace Zeroconf
                         
                         if (matches ?? true)
                         {
-                            var key = $"{addrString}{(string.IsNullOrEmpty(name) ? "" : $": {name}")}";
+                            // Key is IP Address. Multiple responses from the same IP mean truncated DNS response packets.
+                            // Reassemble them here...this does break the header and raw fields but downstream
+                            // just uses the lists of records.
+                            var key = $"{addrString}";// {(string.IsNullOrEmpty(name) ? "" : $": {name}")}";
                             lock (dict)
                             {
-                                dict[key] = resp;
+
+                                Response prevresp = null;
+                                if (!dict.TryGetValue(key, out prevresp))
+                                {
+                                    dict[key] = resp;
+                                }
+                                else
+                                {
+                                    // Add the new response records to the previous
+                                    prevresp.Answers.AddRange(resp.Answers);
+                                }
                             }
 
                             callback?.Invoke(key, resp);
@@ -76,13 +89,28 @@ namespace Zeroconf
 
                 Debug.WriteLine($"Looking for {string.Join(", ", options.Protocols)} with scantime {options.ScanTime}");
 
-                await NetworkInterface.NetworkRequestAsync(requestBytes,
-                                                           options.ScanTime,
-                                                           options.Retries,
-                                                           (int)options.RetryDelay.TotalMilliseconds,
-                                                           Converter,                                                           
-                                                           cancellationToken)
-                                      .ConfigureAwait(false);
+                // If there isn't a forced adapter, check all devices
+                if (options.Adapter == null)
+                {
+                    await NetworkInterface.NetworkRequestAsync(requestBytes,
+                                                               options.ScanTime,
+                                                               options.Retries,
+                                                               (int)options.RetryDelay.TotalMilliseconds,
+                                                               Converter,
+                                                               cancellationToken)
+                                          .ConfigureAwait(false);
+                }
+                else
+                {
+                    await NetworkInterface.NetworkRequestAsync(requestBytes,
+                                           options.ScanTime,
+                                           options.Retries,
+                                           (int)options.RetryDelay.TotalMilliseconds,
+                                           Converter,
+                                           options.Adapter,
+                                           cancellationToken)
+                      .ConfigureAwait(false);
+                }
 
                 return dict;
             }

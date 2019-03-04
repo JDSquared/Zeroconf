@@ -45,6 +45,8 @@ namespace Zeroconf
         public ScanQueryType ScanQueryType { get; set; }
 
         public bool AllowOverlappedQueries { get; set; }
+
+        public System.Net.NetworkInformation.NetworkInterface Adapter { get; set; }
     }
 
     public enum ScanQueryType

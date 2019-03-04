@@ -14,6 +14,14 @@ namespace Zeroconf
                                  Action<IPAddress, byte[]> onResponse,
                                  CancellationToken cancellationToken);
 
+        Task NetworkRequestAsync(byte[] requestBytes,
+                                              TimeSpan scanTime,
+                                              int retries,
+                                              int retryDelayMilliseconds,
+                                              Action<IPAddress, byte[]> onResponse,
+                                              System.Net.NetworkInformation.NetworkInterface adapter,
+                                              CancellationToken cancellationToken);
+
         Task ListenForAnnouncementsAsync(Action<AdapterInformation, string, byte[]> callback, CancellationToken cancellationToken);
     }
 }
